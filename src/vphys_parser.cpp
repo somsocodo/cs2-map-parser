@@ -108,7 +108,7 @@ int main()
         int count_meshes = 0;
 
         //check hulls 
-        while (true) {
+        while (false) {
             string index_str = to_string(index);
             string collision_index_str = parser.get_value("m_parts[0].m_rnShape.m_hulls[" + index_str + "].m_nCollisionAttributeIndex");
             if (collision_index_str != "") {
@@ -165,9 +165,11 @@ int main()
         while (true) {
             string index_str = to_string(index);
             string collision_index_str = parser.get_value("m_parts[0].m_rnShape.m_meshes[" + index_str + "].m_nCollisionAttributeIndex");
-            if (collision_index_str != "") {
+            string property_index_str = parser.get_value("m_parts[0].m_rnShape.m_meshes[" + index_str + "].m_nSurfacePropertyIndex");
+            if (collision_index_str != "" && property_index_str != "") {
                 int collision_index = atoi(collision_index_str.c_str());
-                if (collision_index == 0) {
+                int property_index = atoi(property_index_str.c_str());
+                if (collision_index != 2 || property_index !=1) {
                     vector<int> triangle_processed = bytes_to_vec<int>(parser.get_value("m_parts[0].m_rnShape.m_meshes.[" + index_str + "].m_Mesh.m_Triangles"));
                     vector<float> vertex_processed = bytes_to_vec<float>(parser.get_value("m_parts[0].m_rnShape.m_meshes.[" + index_str + "].m_Mesh.m_Vertices"));
 
@@ -195,7 +197,7 @@ int main()
             index++;
         }
 
-        parser.~c_kv3_parser();
+        //parser.~c_kv3_parser();
 
         ofstream out(export_file_name, ios::out);
         out << vec_to_bytes<Triangle>(triangles);
@@ -206,6 +208,5 @@ int main()
         triangles.clear();
     }
 
-    system("pause");
     return 0;
 }
